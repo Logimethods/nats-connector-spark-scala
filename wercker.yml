@@ -2,6 +2,11 @@ box: hseeberger/scala-sbt
 build:
   steps:
     - script:
+        name: Start NATS servers
+        code: |
+          gnatsd -p 4221&
+          nats-streaming-server -p 4223&
+    - script:
         name: (TMP) Populate local maven repo
         code: |
           mkdir -p "/root/.m2/repository/io/nats/"

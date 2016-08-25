@@ -19,7 +19,7 @@ import com.logimethods.connector.nats_spark.Utilities;
 
 // @see https://www.supergloo.com/fieldnotes/spark-streaming-testing-scala/
 class SparkToNatsStreamingConnectorRDDTest extends FlatSpec with Matchers with Eventually with BeforeAndAfter {
-  private val master = "local[1]"
+  private val master = "local[3]"
   private val appName = "spark-streaming-test"
   private val filePath: String = "target/testfile"
 
