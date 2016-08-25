@@ -12,6 +12,9 @@ val sparkVersion = "1.6.2"
 // TODO Remove once the java-nats-streaming is released on a public repository
 resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
 
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+resolvers += "Sonatype OSS Release" at "https://oss.sonatype.org/content/groups/public/"
+
 libraryDependencies += "com.logimethods" % "nats-connector-spark" % version.value changing()
 libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion % "provided"
 libraryDependencies += "org.apache.spark" %% "spark-streaming" % sparkVersion
