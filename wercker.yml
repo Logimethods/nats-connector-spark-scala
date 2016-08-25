@@ -1,0 +1,89 @@
+box: hseeberger/scala-sbt
+build:
+  steps:
+    - script:
+        name: (TMP) Populate local maven repo
+        code: |
+          mkdir -p "/root/.m2/repository/io/nats/"
+          cp -v -R "./repository/io/nats/" "/root/.m2/repository/io/"
+    - script:
+        name: compile
+        code: |
+          sbt clean compile test
+
+scaladoc:
+  steps:
+    - script:
+        name: Generate Scaladoc
+        code: |
+          sbt clean compile doc
+    - script:
+        name: Move Scaladoc
+        code: |
+          export PROJECT_VERSION=$(sbt 'inspect version' | grep Setting | awk '{print $NF}' | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g')
+          export ROOT_API="/pipeline/source/target/scala-2.11/api"
+          export ROOT_TMP="/pipeline/source/tmp"
+          echo "mkdir -p ${ROOT_TMP}/docs/${PROJECT_VERSION}/api"
+          mkdir -p ${ROOT_TMP}/docs/${PROJECT_VERSION}/api
+          mv ${ROOT_API}/* ${ROOT_TMP}/docs/${PROJECT_VERSION}/api/
+          echo "=================================="
+          ls -R ${ROOT_TMP}/
+          echo "=================================="
+    - script:
+        name: Configure Git
+        code: |-
+          # git config --global push.default matching
+          git config --global push.default simple
+          git config --global user.email "$GITHUB_EMAIL"
+          git config --global user.name "$GITHUB_USERNAME"
+    - script:
+        # https://srackham.wordpress.com/2014/12/14/publishing-a-project-website-to-github-pages/
+        # https://help.github.com/articles/creating-pages-with-the-automatic-generator/
+        # https://help.github.com/articles/creating-project-pages-manually/
+        # https://vaadin.com/blog/-/blogs/host-your-javadoc-s-online-in-github
+        # http://little418.com/2015/04/directory-listings-on-github-pages.html
+        name: Publish Scaladoc
+        code: |
+          export ROOT_GIT="/pipeline/source/git_tmp"
+          mkdir -p ${ROOT_GIT}
+          cd ${ROOT_GIT}
+          git clone --branch gh-pages https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/logimethods/nats-connector-spark-scala.git gh-pages
+          cd gh-pages
+          cp -r ${ROOT_TMP}/* .
+          ls docs
+          ls docs | perl -e 'print "<html><body><ul>"; while(<>) { chop $_; print "<li><a href=\"./docs/$_/api\">$_</a></li>";} print "</ul></body></html>"' > index.html
+          echo "Last edited the $(date +'%Y-%m-%d at %H:%M:%S')" >> index.html
+          git add --all        
+          git commit -a -m "Wercker Run Id: '${WERCKER_RUN_ID}', Project Version: ${PROJECT_VERSION}"
+          git push origin gh-pages
+          
+deploy:
+  steps:
+    - script:
+        name: check non-snapshot
+        code: |
+          export PROJECT_VERSION=$(sbt 'inspect version' | grep Setting | awk '{print $NF}' | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g')
+          if [[ ${PROJECT_VERSION} == *"SNAPSHOT"* ]];then exit 1; fi
+    - script:
+        name: deploy
+        code: |
+          echo "${SONATYPE_PGP_SECRING_64}" | base64 -d > /pipeline/source/secring.asc
+          echo "${SONATYPE_PGP_PUBRING_64}" | base64 -d > /pipeline/source/pubring.asc
+          sbt clean compile publishSigned
+
+deploy-snapshot:
+  steps:
+    - script:
+        name: check snapshot
+        code: |
+          export PROJECT_VERSION=$(sbt 'inspect version' | grep Setting | awk '{print $NF}' | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g')
+          if [[ ${PROJECT_VERSION} != *"SNAPSHOT"* ]];then exit 1; fi
+    - script:
+        name: (TMP) Populate local maven repo
+        code: |
+          mkdir -p "/root/.m2/repository/io/nats/"
+          cp -v -R "./repository/io/nats/" "/root/.m2/repository/io/"
+    - script:
+        name: deploy-snapshot
+        code: |
+          sbt clean compile publish
