@@ -23,6 +23,8 @@ libraryDependencies += "org.apache.spark" %% "spark-streaming" % sparkVersion
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.0"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.0" % "test"
 
+parallelExecution in Test := false
+
 updateOptions := updateOptions.value.withCachedResolution(true)
 
 // PUBLISH
