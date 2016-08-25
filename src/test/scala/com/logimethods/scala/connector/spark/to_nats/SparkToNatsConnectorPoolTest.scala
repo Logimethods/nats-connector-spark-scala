@@ -15,5 +15,16 @@ class SparkToNatsConnectorPoolTest extends FunSuite {
     val pool = SparkToNatsConnectorPool.newPool().withSubjects("Subject")
     val connector = pool.getConnector()
     assert(connector.isInstanceOf[SparkToStandardNatsConnectorImpl])
-  }  
+  }
+   
+  test("SparkToNatsConnectorPool.newStreamingPool(clusterID: String) should return an instance of SparkToNatsStreamingConnectorPoolScala") {
+    val pool = SparkToNatsConnectorPool.newStreamingPool("clusterID")
+    assert(pool.isInstanceOf[SparkToNatsStreamingConnectorPoolScala])
+  }
+  
+  test("Connector should be a SparkToNatsStreamingConnectorImpl") {
+    val pool = SparkToNatsConnectorPool.newStreamingPool("clusterID").withSubjects("Subject")
+    val connector = pool.getConnector()
+    assert(connector.isInstanceOf[SparkToNatsStreamingConnectorImpl])
+  }
 }

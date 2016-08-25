@@ -11,12 +11,20 @@ import org.apache.spark.streaming.dstream.DStream
 import com.logimethods.connector.spark.to_nats._
 
 class SparkToStandardNatsConnectorPoolScala extends AbstractSparkToStandardNatsConnectorPool[SparkToStandardNatsConnectorPoolScala] 
-                                            with SparkToNatsConnectorPoolTrait[SparkToStandardNatsConnectorPoolScala] 
-{  
+                                            with SparkToNatsConnectorPoolTrait[SparkToStandardNatsConnectorPoolScala] {  
+}
+
+class SparkToNatsStreamingConnectorPoolScala(clusterID: String) 
+                                            extends AbstractSparkToNatsStreamingConnectorPool[SparkToNatsStreamingConnectorPoolScala](clusterID: String) 
+                                            with SparkToNatsConnectorPoolTrait[SparkToNatsStreamingConnectorPoolScala] {  
 }
 
 object SparkToNatsConnectorPool  {  
   def newPool(): SparkToStandardNatsConnectorPoolScala = {
 		new SparkToStandardNatsConnectorPoolScala()
+	}
+  
+  def newStreamingPool(clusterID: String): SparkToNatsStreamingConnectorPoolScala = {
+		new SparkToNatsStreamingConnectorPoolScala(clusterID)
 	}
 }
