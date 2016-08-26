@@ -12,7 +12,7 @@ import org.apache.spark.streaming.dstream.DStream
 trait SparkToNatsConnectorPoolTrait[T] extends SparkToNatsConnectorPool[T] {
 
   // http://spark.apache.org/docs/1.6.2/streaming-programming-guide.html#design-patterns-for-using-foreachrdd
-  def publishToNats(rdd: DStream[Object]){
+  def publishToNats(rdd: DStream[Any]){
     rdd.foreachRDD { rdd1 =>
       rdd1.foreachPartition { partitionOfRecords =>
 			  val connector = getConnector();
