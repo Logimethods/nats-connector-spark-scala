@@ -4,8 +4,13 @@ build:
     - script:
         name: Start NATS servers
         code: |
-          ./gnatsd-v0.8.0-linux-amd64/gnatsd -p 4221&
-          ./nats-streaming-server-linux-amd64/nats-streaming-server -p 4223&
+          pwd
+          ls -als
+          cd /gnatsd-v0.8.0-linux-amd64
+          ./gnatsd -p 4221&
+          cd /nats-streaming-server-linux-amd64
+          ./nats-streaming-server -p 4223&
+          cd /
     - script:
         name: (TMP) Populate local maven repo
         code: |
