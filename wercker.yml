@@ -7,11 +7,6 @@ build:
           gnatsd -p 4221&
           nats-streaming-server -p 4223&
     - script:
-        name: (TMP) Populate local maven repo
-        code: |
-          mkdir -p "/root/.m2/repository/io/nats/"
-          cp -v -R "./repository/io/nats/" "/root/.m2/repository/io/"
-    - script:
         name: compile
         code: |
           sbt clean compile test
@@ -83,11 +78,6 @@ deploy-snapshot:
         code: |
           export PROJECT_VERSION=$(sbt 'inspect version' | grep Setting | awk '{print $NF}' | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g')
           if [[ ${PROJECT_VERSION} != *"SNAPSHOT"* ]];then exit 1; fi
-    - script:
-        name: (TMP) Populate local maven repo
-        code: |
-          mkdir -p "/root/.m2/repository/io/nats/"
-          cp -v -R "./repository/io/nats/" "/root/.m2/repository/io/"
     - script:
         name: deploy-snapshot
         code: |
