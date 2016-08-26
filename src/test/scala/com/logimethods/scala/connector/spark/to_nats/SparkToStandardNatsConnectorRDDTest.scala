@@ -71,9 +71,10 @@ class SparkToStandardNatsConnectorRDDTest extends FlatSpec with Matchers with Ev
 
 		val lines = mutable.Queue[RDD[String]]()
     val dstream = ssc.queueStream(lines)
+    val integers = dstream.map({ str => Integer.parseInt(str) })
  
     dstream.print()
-    pool.publishToNats(dstream)
+    pool.publishToNats(integers)
  
     ssc.start()
  
