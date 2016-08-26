@@ -1,4 +1,4 @@
-box: hseeberger/scala-sbt
+box: logimethods/sbt-nats
 build:
   steps:
     - script:
