@@ -7,11 +7,6 @@ build:
           gnatsd -p 4221&
           nats-streaming-server -p 4223&
     - script:
-        name: (TMP) Populate local maven repo
-        code: |
-          mkdir -p "/root/.m2/repository/io/nats/nats-parent"
-          cp -v -R "./repository/io/nats/nats-parent" "/root/.m2/repository/io/nats"
-    - script:
         name: compile
         code: |
           sbt clean compile test
@@ -78,11 +73,6 @@ deploy:
 
 deploy-snapshot:
   steps:
-    - script:
-        name: (TMP) Populate local maven repo
-        code: |
-          mkdir -p "/root/.m2/repository/io/nats/nats-parent"
-          cp -v -R "./repository/io/nats/nats-parent" "/root/.m2/repository/io/nats"
     - script:
         name: check snapshot
         code: |
