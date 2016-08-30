@@ -12,7 +12,7 @@ val sparkVersion = "1.6.2"
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 resolvers += "Sonatype OSS Release" at "https://oss.sonatype.org/content/groups/public/"
 // TODO Remove once the nats-parent 1.0-SNAPSHOT is fixed (https://github.com/nats-io/java-nats-streaming/issues/18)
-resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
+///resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
 
 libraryDependencies += "com.logimethods" % "nats-connector-spark" % version.value changing()
 libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion % "provided"
