@@ -1,4 +1,4 @@
-# nats-connector-spark-scala
+# (Scala based) NATS / Spark Connectors
 A Scala based Spark Publish/Subscribe NATS Connector
 
 ## Usage (in Scala)  *WARNING: NEED TO BE UPDATED TO VERSION 0.2.0*
