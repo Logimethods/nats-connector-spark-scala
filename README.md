@@ -1,5 +1,11 @@
 # (Scala based) NATS / Spark Connectors
-A Scala based Spark Publish/Subscribe NATS Connector
+That library provides a Scala based [Apache Spark](http://spark.apache.org/) (a fast and general engine for large-scale data processing) integration with the [NATS messaging system](https://nats.io) (a highly performant cloud native messaging system) as well as [NATS Streaming](http://www.nats.io/documentation/streaming/nats-streaming-intro/) (a data streaming system powered by NATS).
+
+[![MIT License](https://img.shields.io/npm/l/express.svg)](http://opensource.org/licenses/MIT)
+[![Issues](https://img.shields.io/github/issues/Logimethods/nats-connector-spark-scala.svg)](https://github.com/Logimethods/nats-connector-spark-scala/issues)
+[![wercker status](https://app.wercker.com/status/4dc494e7708dc596dfc37b65500cf70c/s/master "wercker status")](https://app.wercker.com/project/byKey/4dc494e7708dc596dfc37b65500cf70c)
+[![Javadoc](http://javadoc-badge.appspot.com/com.logimethods/nats-connector-spark-scala.svg?label=scaladoc)](http://logimethods.github.io/nats-connector-spark-scala/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala)
 
 ## Usage (in Scala)  *WARNING: NEED TO BE UPDATED TO VERSION 0.2.0*
 _See the Java code to get the list of the available options (properties, subjects, etc.)._
