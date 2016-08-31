@@ -19,36 +19,47 @@ resolvers += "Sonatype OSS Release" at "https://oss.sonatype.org/content/groups/
 libraryDependencies += "com.logimethods"  %% "nats-connector-spark-scala" % "0.2.0-SNAPSHOT" changing()
 ```
 
-## Usage (in Scala)  *WARNING: NEED TO BE UPDATED TO VERSION 0.2.0*
-_See the Java code to get the list of the available options (properties, subjects, etc.)._
-### From NATS to Spark (Streaming)
+## Usage (in Scala)
+_See the [Java code Documentation](https://github.com/Logimethods/nats-connector-spark/blob/master/README.md#usage-in-java) to get the list of the available options (properties, subjects, etc.)._
 ```
-val messages = ssc.receiverStream(NatsToSparkConnector.receiveFromNats(properties, StorageLevel.MEMORY_ONLY, inputSubject))
+import com.logimethods.connector.nats.to_spark._
+import com.logimethods.scala.connector.spark.to_nats._
+
+val ssc = new StreamingContext(sc, new Duration(2000));
 ```
 
-### From Spark (Streaming) to NATS
-See [Design Patterns for using foreachRDD](http://spark.apache.org/docs/latest/streaming-programming-guide.html#design-patterns-for-using-foreachrdd)
+### From NATS Streaming to Spark
 ```
-messages.foreachRDD { rdd =>
-  val connectorPool = new SparkToNatsConnectorPool(properties, outputSubject)
-  rdd.foreachPartition { partitionOfRecords =>
-    val connector = connectorPool.getConnector()
-    partitionOfRecords.foreach(record => connector.publishToNats(record))
-    connectorPool.returnConnector(connector)  // return to the pool for future reuse
-  }
-}
+val stream = NatsToSparkConnector.receiveFromNatsStreaming(StorageLevel.MEMORY_ONLY, clusterId)
+                                 .withNatsURL(natsUrl)
+                                 .withSubjects(inputSubject)
 ```
-
-### From Spark (*WITHOUT Streaming NOR Spark Cluster*) to NATS
+### From NATS ~~Streaming~~ to Spark
 ```
-import com.logimethods.nats.connector.spark.SparkToNatsConnector;
-```
-```
-val publishToNats = SparkToNatsConnector.publishToNats(properties, outputSubject)
-messages.foreachRDD { rdd => rdd.foreach { m => publishToNats.call(m.toString()) }}
+val properties = new Properties()
+val natsUrl = System.getenv("NATS_URI")
+val stream = NatsToSparkConnector.receiveFromNats(StorageLevel.MEMORY_ONLY)
+                                 .withProperties(properties)
+                                 .withSubjects(inputSubject)
 ```
 
-## Samples
+### From Spark to NATS Streaming
+```
+SparkToNatsConnectorPool.newStreamingPool(clusterId)
+                        .withNatsURL(natsUrl)
+                        .withSubjects(outputSubject)
+                        .publishToNats(ssc)
+```
+
+### From Spark to NATS ~~Streaming~~
+```
+SparkToNatsConnectorPool.newPool()
+                        .withProperties(properties)
+                        .withSubjects(outputSubject)
+                        .publishToNats(ssc)
+```
+
+## Code Samples
 * The ['docker-nats-connector-spark'](https://github.com/Logimethods/docker-nats-connector-spark) Docker Based Project that makes use of Gatling, Spark & NATS.
 
 ## License
