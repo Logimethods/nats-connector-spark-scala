@@ -11,6 +11,14 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 [![Javadoc](http://javadoc-badge.appspot.com/com.logimethods/nats-connector-spark-scala.svg?label=scaladoc)](http://logimethods.github.io/nats-connector-spark-scala/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala)
 
+## Installation
+```
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+resolvers += "Sonatype OSS Release" at "https://oss.sonatype.org/content/groups/public/"
+
+libraryDependencies += "com.logimethods"  %% "nats-connector-spark-scala" % "0.2.0-SNAPSHOT" changing()
+```
+
 ## Usage (in Scala)  *WARNING: NEED TO BE UPDATED TO VERSION 0.2.0*
 _See the Java code to get the list of the available options (properties, subjects, etc.)._
 ### From NATS to Spark (Streaming)
