@@ -12,7 +12,7 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala)
 
 ## Installation
-```
+```Scala
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 resolvers += "Sonatype OSS Release" at "https://oss.sonatype.org/content/groups/public/"
 
@@ -21,7 +21,7 @@ libraryDependencies += "com.logimethods"  %% "nats-connector-spark-scala" % "0.2
 
 ## Usage (in Scala)
 _See the [Java code Documentation](https://github.com/Logimethods/nats-connector-spark/blob/master/README.md#usage-in-java) to get the list of the available options (properties, subjects, etc.)._
-```
+```Scala
 import com.logimethods.connector.nats.to_spark._
 import com.logimethods.scala.connector.spark.to_nats._
 
@@ -29,13 +29,13 @@ val ssc = new StreamingContext(sc, new Duration(2000));
 ```
 
 ### From NATS Streaming to Spark
-```
+```Scala
 val stream = NatsToSparkConnector.receiveFromNatsStreaming(StorageLevel.MEMORY_ONLY, clusterId)
                                  .withNatsURL(natsUrl)
                                  .withSubjects(inputSubject)
 ```
 ### From NATS ~~Streaming~~ to Spark
-```
+```Scala
 val properties = new Properties()
 val natsUrl = System.getenv("NATS_URI")
 val stream = NatsToSparkConnector.receiveFromNats(StorageLevel.MEMORY_ONLY)
@@ -44,7 +44,7 @@ val stream = NatsToSparkConnector.receiveFromNats(StorageLevel.MEMORY_ONLY)
 ```
 
 ### From Spark to NATS Streaming
-```
+```Scala
 SparkToNatsConnectorPool.newStreamingPool(clusterId)
                         .withNatsURL(natsUrl)
                         .withSubjects(outputSubject)
@@ -52,7 +52,7 @@ SparkToNatsConnectorPool.newStreamingPool(clusterId)
 ```
 
 ### From Spark to NATS ~~Streaming~~
-```
+```Scala
 SparkToNatsConnectorPool.newPool()
                         .withProperties(properties)
                         .withSubjects(outputSubject)
