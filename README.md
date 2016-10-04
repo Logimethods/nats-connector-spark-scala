@@ -8,8 +8,8 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 [![MIT License](https://img.shields.io/npm/l/express.svg)](http://opensource.org/licenses/MIT)
 [![Issues](https://img.shields.io/github/issues/Logimethods/nats-connector-spark-scala.svg)](https://github.com/Logimethods/nats-connector-spark-scala/issues)
 [![wercker status](https://app.wercker.com/status/4dc494e7708dc596dfc37b65500cf70c/s/master "wercker status")](https://app.wercker.com/project/byKey/4dc494e7708dc596dfc37b65500cf70c)
-[![Javadoc](http://javadoc-badge.appspot.com/com.logimethods/nats-connector-spark-scala.svg?label=scaladoc)](http://logimethods.github.io/nats-connector-spark-scala/)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala)
+[![Scaladoc](http://javadoc-badge.appspot.com/com.logimethods/nats-connector-spark-scala_2.10.svg?label=scaladoc)](http://logimethods.github.io/nats-connector-spark-scala/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.10/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.10)
 
 ## Installation
 ```Scala
