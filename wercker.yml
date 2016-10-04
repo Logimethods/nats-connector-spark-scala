@@ -3,6 +3,11 @@ box: logimethods/sbt-nats
 build:
   steps:
     - script:
+        name: Start NATS servers
+        code: |
+          gnatsd -p 4221&
+          nats-streaming-server -p 4223&
+    - script:
         name: compile
         code: |
           sbt clean compile test
