@@ -16,7 +16,7 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 resolvers += "Sonatype OSS Release" at "https://oss.sonatype.org/content/groups/public/"
 
-libraryDependencies += "com.logimethods"  %% "nats-connector-spark-scala" % "0.2.0" changing()
+libraryDependencies += "com.logimethods"  %% "nats-connector-spark-scala" % "0.2.0"
 ```
 
 ## Usage (in Scala)
