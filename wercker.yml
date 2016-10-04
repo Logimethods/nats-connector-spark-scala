@@ -1,5 +1,18 @@
 box: logimethods/sbt-nats
+
 build:
+  steps:
+    - script:
+        name: TEST
+        code: |
+          echo "${SONATYPE_PGP_PUBRING_64}"
+          echo "${SONATYPE_PGP_SECRING_64:1:10}"
+          echo "-------------"
+          echo "${SONATYPE_PGP_SECRING_64}" | base64 -d > /pipeline/source/secring.asc
+          echo "${SONATYPE_PGP_PUBRING_64}" | base64 -d > /pipeline/source/pubring.asc
+          sbt compile publishSigned sonatypeRelease
+
+build-x:
   steps:
     - script:
         name: Start NATS servers
@@ -37,7 +50,7 @@ scaladoc:
         fingerprint: 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48
     - script:
         name: Configure Git
-        code: |-
+        code: |
           # git config --global push.default matching
           git config --global push.default simple
           git config --global user.email "$GITHUB_EMAIL"
@@ -72,11 +85,11 @@ deploy:
           export PROJECT_VERSION=$(sbt 'inspect version' | grep Setting | awk '{print $NF}' | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g')
           if [[ ${PROJECT_VERSION} == *"SNAPSHOT"* ]];then exit 1; fi
     - script:
-        name: deploy
+        name: sonatype deploy
         code: |
           echo "${SONATYPE_PGP_SECRING_64}" | base64 -d > /pipeline/source/secring.asc
           echo "${SONATYPE_PGP_PUBRING_64}" | base64 -d > /pipeline/source/pubring.asc
-          sbt clean compile publishSigned
+          sbt clean compile publishSigned sonatypeRelease
 
 deploy-snapshot:
   steps:
