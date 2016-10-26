@@ -11,6 +11,10 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 [![Scaladoc](http://javadoc-badge.appspot.com/com.logimethods/nats-connector-spark-scala_2.10.svg?label=scaladoc)](http://logimethods.github.io/nats-connector-spark-scala/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.10/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.10)
 
+## Release Notes
+### Version 0.3.0-SNAPSHOT
+- Spark version 2.0.1 + Scala version 1.11.8
+
 ## Installation
 ```Scala
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
