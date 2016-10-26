@@ -6,8 +6,8 @@ organization := "com.logimethods"
 //// sonatypeProfileName := "laurent.magnin"
 
 version := "0.3.0-SNAPSHOT"
-scalaVersion := "2.10.6"
-val sparkVersion = "1.6.2"
+scalaVersion := "2.11.8"
+val sparkVersion = "2.0.1"
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 resolvers += "Sonatype OSS Release" at "https://oss.sonatype.org/content/groups/public/"
