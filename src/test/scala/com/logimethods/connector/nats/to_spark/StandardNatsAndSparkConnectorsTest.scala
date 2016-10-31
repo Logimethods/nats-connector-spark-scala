@@ -34,7 +34,7 @@ import com.logimethods.connector.nats.spark.test.NatsPublisher;
 import com.logimethods.connector.nats.spark.test.StandardNatsPublisher;
 import com.logimethods.connector.nats.spark.test.StandardNatsSubscriber;
 
-class StandardNatsToSparkConnectorTest extends FunSuite with BeforeAndAfter with TimeLimitedTests { //FlatSpec with Matchers with Eventually with BeforeAndAfter {
+class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter with TimeLimitedTests { //FlatSpec with Matchers with Eventually with BeforeAndAfter {
   // http://doc.scalatest.org/3.0.0/index.html#org.scalatest.concurrent.TimeLimitedTests
   def timeLimit = 20 second
   override val defaultTestSignaler = ThreadSignaler
@@ -111,7 +111,7 @@ class StandardNatsToSparkConnectorTest extends FunSuite with BeforeAndAfter with
 		ns.waitForCompletion()
   }
 	
-  test("NatsSubscriber should receive NATS messages from NatsPublisher THROUGH SPARK STREAMING") {
+  ignore("NatsSubscriber should receive NATS messages from NatsPublisher THROUGH SPARK STREAMING") {
 		
 		val stream = NatsToSparkConnector
                         .receiveFromNats(StorageLevel.MEMORY_ONLY)
@@ -127,6 +127,28 @@ class StandardNatsToSparkConnectorTest extends FunSuite with BeforeAndAfter with
                             .publishToNats(messages)
     ssc.start()
     Thread.sleep(4000)
+    
+    checkReceptionOfNatsMessages(outputSubject)
+  }
+	
+  test("NatsSubscriber should receive NATS messages from NatsPublisher through SparkStreaming with Payload") {
+		
+		val stream = NatsToSparkConnector
+                        .receiveFromNats(StorageLevel.MEMORY_ONLY)
+                        .withNatsURL(NATS_SERVER_URL)
+                        .withSubjects(DEFAULT_SUBJECT)
+                        .withSubjectAndPayload()
+		val messages = ssc.receiverStream(stream);
+		messages.print()
+		
+		val outputSubject = DEFAULT_SUBJECT + "_OUT"
+		SparkToNatsConnectorPool.newPool()
+                            .withNatsURL(NATS_SERVER_URL)
+                            .withSubjects(outputSubject)
+                            .publishToNats(messages)
+//                            .withSubjectAndPayload()
+    ssc.start()
+    Thread.sleep(6000)
     
     checkReceptionOfNatsMessages(outputSubject)
   }
