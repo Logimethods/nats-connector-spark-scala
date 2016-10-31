@@ -112,7 +112,6 @@ class StandardNatsToSparkConnectorTest extends FunSuite with BeforeAndAfter with
   }
 	
   test("NatsSubscriber should receive NATS messages from NatsPublisher THROUGH SPARK STREAMING") {
-		val executor = Executors.newFixedThreadPool(12);
 		
 		val stream = NatsToSparkConnector
                         .receiveFromNats(StorageLevel.MEMORY_ONLY)
@@ -128,7 +127,13 @@ class StandardNatsToSparkConnectorTest extends FunSuite with BeforeAndAfter with
                             .publishToNats(messages)
     ssc.start()
     Thread.sleep(4000)
-
+    
+    checkReceptionOfNatsMessages(outputSubject)
+  }
+  
+  def checkReceptionOfNatsMessages(outputSubject: String) = {
+		val executor = Executors.newFixedThreadPool(12);
+		
     val nbOfMessages = 5;
 		val np = getNatsPublisher(nbOfMessages);
 
