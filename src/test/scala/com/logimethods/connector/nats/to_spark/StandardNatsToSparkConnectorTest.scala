@@ -36,7 +36,7 @@ import com.logimethods.connector.nats.spark.test.StandardNatsSubscriber;
 
 class StandardNatsToSparkConnectorTest extends FunSuite with BeforeAndAfter with TimeLimitedTests { //FlatSpec with Matchers with Eventually with BeforeAndAfter {
   // http://doc.scalatest.org/3.0.0/index.html#org.scalatest.concurrent.TimeLimitedTests
-  def timeLimit = 15 second
+  def timeLimit = 20 second
   override val defaultTestSignaler = ThreadSignaler
 
 	val DEFAULT_SUBJECT_ROOT = "nats2sparkSubject"
@@ -63,23 +63,23 @@ class StandardNatsToSparkConnectorTest extends FunSuite with BeforeAndAfter with
 		val level = Level.TRACE;
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.SparkToNatsConnectorPool[Object]], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.SparkToNatsConnector[Object]], level);
+		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.AbstractSparkToStandardNatsConnectorPool[Object]], level);
+		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.to_spark.StandardNatsToSparkConnectorImpl], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.SparkToStandardNatsConnectorImpl], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.spark.test.StandardNatsPublisher], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.spark.test.NatsPublisher], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.spark.test.StandardNatsSubscriber], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.spark.test.NatsSubscriber], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.spark.test.TestClient], level);
+		
 		UnitTestUtilities.setLogLevel("org.apache.spark", Level.WARN);
 		UnitTestUtilities.setLogLevel("org.spark-project", Level.WARN);
 
-		val conf = new SparkConf()
-      .setMaster(master).setAppName(appName)
-      .set("spark.streaming.clock", "org.apache.spark.streaming.util.ManualClock")
+		val conf = new SparkConf().setMaster(master).setAppName(appName)
  
     ssc = new StreamingContext(conf, batchDuration)
-    clock = new ClockWrapper(ssc)
     
-    pool = SparkToNatsConnectorPool.newStreamingPool(CLUSTER_ID).withSubjects(subject1, subject2).withNatsURL(STAN_URL)
+//    pool = SparkToNatsConnectorPool.newStreamingPool(CLUSTER_ID).withSubjects(subject1, subject2).withNatsURL(STAN_URL)
     
 		UnitTestUtilities.startStreamingServer(CLUSTER_ID);
 		
@@ -93,19 +93,51 @@ class StandardNatsToSparkConnectorTest extends FunSuite with BeforeAndAfter with
     }
   }
 	
-  test("NatsSubscriber should receive NATS messages DIRECTLY from NatsPublisher") {
-		val nsExecutor = Executors.newFixedThreadPool(6);
-		val npExecutor = Executors.newFixedThreadPool(6);
+  ignore("NatsSubscriber should receive NATS messages DIRECTLY from NatsPublisher") {
+		val executor = Executors.newFixedThreadPool(12);
 
 		val nbOfMessages = 5;
 		val np = getNatsPublisher(nbOfMessages);
 
 		val ns: StandardNatsSubscriber = new StandardNatsSubscriber(NATS_SERVER_URL, DEFAULT_SUBJECT + "_id", DEFAULT_SUBJECT, nbOfMessages);
 
-		nsExecutor.execute(ns);		
+		executor.execute(ns);		
 		ns.waitUntilReady();
 		
-		npExecutor.execute(np);
+		executor.execute(np);
+		np.waitUntilReady();			
+		np.waitForCompletion()
+		
+		ns.waitForCompletion()
+  }
+	
+  test("NatsSubscriber should receive NATS messages from NatsPublisher THROUGH SPARK STREAMING") {
+		val executor = Executors.newFixedThreadPool(12);
+		
+		val stream = NatsToSparkConnector
+                        .receiveFromNats(StorageLevel.MEMORY_ONLY)
+                        .withNatsURL(NATS_SERVER_URL)
+                        .withSubjects(DEFAULT_SUBJECT)
+		val messages = ssc.receiverStream(stream);
+		messages.print()
+		
+		val outputSubject = DEFAULT_SUBJECT + "_OUT"
+		SparkToNatsConnectorPool.newPool()
+                            .withNatsURL(NATS_SERVER_URL)
+                            .withSubjects(outputSubject)
+                            .publishToNats(messages)
+    ssc.start()
+    Thread.sleep(4000)
+
+    val nbOfMessages = 5;
+		val np = getNatsPublisher(nbOfMessages);
+
+		val ns: StandardNatsSubscriber = new StandardNatsSubscriber(NATS_SERVER_URL, outputSubject + "_id", outputSubject, nbOfMessages);
+
+		executor.execute(ns);		
+		ns.waitUntilReady();
+		
+		executor.execute(np);
 		np.waitUntilReady();			
 		np.waitForCompletion()
 		
