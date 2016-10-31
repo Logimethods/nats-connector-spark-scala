@@ -13,7 +13,7 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.ClockWrapper
 import org.scalatest.FunSuite
 import org.scalatest.concurrent.TimeLimitedTests
-import org.scalatest.concurrent.{Eventually, TimeLimitedTests}
+import org.scalatest.concurrent.{ThreadSignaler, TimeLimitedTests}
 import org.scalatest.{BeforeAndAfter, FlatSpec, Matchers}
 import scala.collection.mutable
 import scala.concurrent.duration._
@@ -35,7 +35,9 @@ import com.logimethods.connector.nats.spark.test.StandardNatsPublisher;
 import com.logimethods.connector.nats.spark.test.StandardNatsSubscriber;
 
 class StandardNatsToSparkConnectorTest extends FunSuite with BeforeAndAfter with TimeLimitedTests { //FlatSpec with Matchers with Eventually with BeforeAndAfter {
-  def timeLimit = 6 second
+  // http://doc.scalatest.org/3.0.0/index.html#org.scalatest.concurrent.TimeLimitedTests
+  def timeLimit = 15 second
+  override val defaultTestSignaler = ThreadSignaler
 
 	val DEFAULT_SUBJECT_ROOT = "nats2sparkSubject"
 	var DEFAULT_SUBJECT_INR = 0
@@ -91,7 +93,7 @@ class StandardNatsToSparkConnectorTest extends FunSuite with BeforeAndAfter with
     }
   }
 	
-  test("NatsSubscriber should receive NATS messages from NatsPublisher") {
+  test("NatsSubscriber should receive NATS messages DIRECTLY from NatsPublisher") {
 		val nsExecutor = Executors.newFixedThreadPool(6);
 		val npExecutor = Executors.newFixedThreadPool(6);
 
