@@ -10,7 +10,6 @@ import org.apache.hadoop.mapred.InvalidInputException
 import org.apache.spark.SparkConf
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.{Seconds, StreamingContext}
-import org.apache.spark.streaming.ClockWrapper
 import org.scalatest.FunSuite
 import org.scalatest.concurrent.TimeLimitedTests
 import org.scalatest.concurrent.{ThreadSignaler, TimeLimitedTests}
@@ -54,13 +53,11 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
   private var pool: SparkToNatsStreamingConnectorPoolScala  = _
 	
   private val batchDuration = Seconds(1)
- 
-  var clock: ClockWrapper = _
 
   before {
 		// Enable tracing for debugging as necessary.
     import org.apache.log4j.Level;
-		val level = Level.TRACE;
+		val level = Level.WARN;
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.SparkToNatsConnectorPool[Object]], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.SparkToNatsConnector[Object]], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.AbstractSparkToStandardNatsConnectorPool[Object]], level);
@@ -71,6 +68,7 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.spark.test.StandardNatsSubscriber], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.spark.test.NatsSubscriber], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.spark.test.TestClient], level);
+		UnitTestUtilities.setLogLevel(classOf[org.spark_project.jetty.server.handler.ContextHandler], level);
 		
 		UnitTestUtilities.setLogLevel("org.apache.spark", Level.WARN);
 		UnitTestUtilities.setLogLevel("org.spark-project", Level.WARN);
@@ -111,13 +109,13 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
 		ns.waitForCompletion()
   }
 	
-  ignore("NatsSubscriber should receive NATS messages from NatsPublisher THROUGH SPARK STREAMING") {
+  test("NatsSubscriber should receive NATS messages from NatsPublisher THROUGH SPARK STREAMING") {
 		
-		val stream = NatsToSparkConnector
+		val messages = NatsToSparkConnector
                         .receiveFromNats(StorageLevel.MEMORY_ONLY)
                         .withNatsURL(NATS_SERVER_URL)
                         .withSubjects(DEFAULT_SUBJECT)
-		val messages = ssc.receiverStream(stream);
+                        .asStreamOf(ssc)
 		messages.print()
 		
 		val outputSubject = DEFAULT_SUBJECT + "_OUT"
@@ -129,17 +127,20 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
     Thread.sleep(4000)
     
     checkReceptionOfNatsMessages(outputSubject)
+    
+    Thread.sleep(1000)
   }
 	
-  test("NatsSubscriber should receive NATS messages from NatsPublisher through SparkStreaming with Payload") {
+  test("NatsSubscriber should receive NATS messages from NatsPublisher through SparkStreaming as Key/Value") {
 		
-		val stream = NatsToSparkConnector
+		val messages = NatsToSparkConnector
                         .receiveFromNats(StorageLevel.MEMORY_ONLY)
                         .withNatsURL(NATS_SERVER_URL)
                         .withSubjects(DEFAULT_SUBJECT)
-                        .withSubjectAndPayload()
-		val messages = ssc.receiverStream(stream);
+                        .storedAsKeyValue()
+                        .asStreamOf(ssc)
 		messages.print()
+		messages.groupByKey().print()
 		
 		val outputSubject = DEFAULT_SUBJECT + "_OUT"
 		SparkToNatsConnectorPool.newPool()
@@ -148,9 +149,11 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
                             .publishToNats(messages)
 //                            .withSubjectAndPayload()
     ssc.start()
-    Thread.sleep(6000)
+    Thread.sleep(4000)
     
     checkReceptionOfNatsMessages(outputSubject)
+    
+    Thread.sleep(1000)
   }
   
   def checkReceptionOfNatsMessages(outputSubject: String) = {
