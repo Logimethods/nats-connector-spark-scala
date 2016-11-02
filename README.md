@@ -14,6 +14,7 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 ## Release Notes
 ### Version 0.3.0-SNAPSHOT
 - Spark version 2.0.1 + Scala version 1.11.8
+- `.asStreamOf(ssc)` introduced
 
 ## Installation
 ```Scala
@@ -37,6 +38,7 @@ val ssc = new StreamingContext(sc, new Duration(2000));
 val stream = NatsToSparkConnector.receiveFromNatsStreaming(StorageLevel.MEMORY_ONLY, clusterId)
                                  .withNatsURL(natsUrl)
                                  .withSubjects(inputSubject)
+                                 .asStreamOf(ssc)
 ```
 ### From NATS ~~Streaming~~ to Spark
 ```Scala
@@ -45,6 +47,7 @@ val natsUrl = System.getenv("NATS_URI")
 val stream = NatsToSparkConnector.receiveFromNats(StorageLevel.MEMORY_ONLY)
                                  .withProperties(properties)
                                  .withSubjects(inputSubject)
+                                 .asStreamOf(ssc)
 ```
 
 ### From Spark to NATS Streaming
