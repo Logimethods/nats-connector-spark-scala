@@ -15,6 +15,7 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 ### Version 0.3.0-SNAPSHOT
 - Spark version 2.0.1 + Scala version 1.11.8
 - `.asStreamOf(ssc)` introduced
+- `storedAsKeyValue()` introduced
 
 ## Installation
 ```Scala
@@ -48,6 +49,19 @@ val stream = NatsToSparkConnector.receiveFromNats(StorageLevel.MEMORY_ONLY)
                                  .withProperties(properties)
                                  .withSubjects(inputSubject)
                                  .asStreamOf(ssc)
+```
+
+### From NATS (Streaming or not) to Spark as *Key/Value Pairs*
+
+The Spark Stream is there made of Key/Value Pairs, where the Key is the _Subject_ and the Value is the _Payload_ of the NATS Messages.
+
+```Scala
+val stream = NatsToSparkConnector.receiveFromNats[Streaming](...)
+                                 ...
+                                 .withSubjects("main-subject.>")
+                                 .storedAsKeyValue()
+                                 .asStreamOf(ssc)
+stream.groupByKey().print()
 ```
 
 ### From Spark to NATS Streaming
