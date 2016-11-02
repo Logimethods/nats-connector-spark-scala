@@ -69,7 +69,7 @@ stream.groupByKey().print()
 SparkToNatsConnectorPool.newStreamingPool(clusterId)
                         .withNatsURL(natsUrl)
                         .withSubjects(outputSubject)
-                        .publishToNats(ssc)
+                        .publishToNats(stream)
 ```
 
 ### From Spark to NATS ~~Streaming~~
@@ -77,7 +77,29 @@ SparkToNatsConnectorPool.newStreamingPool(clusterId)
 SparkToNatsConnectorPool.newPool()
                         .withProperties(properties)
                         .withSubjects(outputSubject)
-                        .publishToNats(ssc)
+                        .publishToNats(stream)
+                        
+```
+### From Spark as *Key/Value Pairs* to NATS (Streaming or not)
+
+The Spark Stream should there be made of Key/Value Pairs. `.storedAsKeyValue()` will publish NATS Messages where the Subject is a composition of the (optional) _Global Subject(s)_ and the _Key_ of the Pairs ; while the NATS _Payload_ will be the Pair's _Value_.
+
+```
+stream.groupByKey().print()
+
+SparkToNatsConnectorPool.new[Streaming]Pool(...)
+                        ...
+                        .withSubjects("A1.", "A2.")
+                        .storedAsKeyValue()
+                        .publishToNats(stream)
+```
+will send to NATS such [subject:payload] messages:
+```
+[A1.key1:string1]
+[A2.key1:string1]
+[A1.key2:string2]
+[A2.key2:string2]
+...
 ```
 
 ## Code Samples
