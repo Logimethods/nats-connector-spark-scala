@@ -16,7 +16,7 @@ trait SparkToNatsConnectorPoolTrait[T] extends SparkToNatsConnectorPool[T] {
     rdd.foreachRDD { rdd1 =>
       rdd1.foreachPartition { partitionOfRecords =>
 			  val connector = getConnector();
-        partitionOfRecords.foreach(record => connector.publishToStr(record.toString()))
+        partitionOfRecords.foreach(record => connector.publish(record))
         returnConnector(connector)  // return to the pool for future reuse
       }
     }

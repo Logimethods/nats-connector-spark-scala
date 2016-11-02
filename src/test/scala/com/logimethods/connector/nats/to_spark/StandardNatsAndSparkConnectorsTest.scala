@@ -38,7 +38,7 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
   def timeLimit = 20 second
   override val defaultTestSignaler = ThreadSignaler
 
-	val DEFAULT_SUBJECT_ROOT = "nats2sparkSubject"
+	val DEFAULT_SUBJECT_ROOT = "nats2spark"
 	var DEFAULT_SUBJECT_INR = 0
 	var DEFAULT_SUBJECT: String = ""
 
@@ -53,11 +53,12 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
   private var pool: SparkToNatsStreamingConnectorPoolScala  = _
 	
   private val batchDuration = Seconds(1)
+  
+  import org.apache.log4j.Level;
+	val level = Level.WARN;
 
   before {
 		// Enable tracing for debugging as necessary.
-    import org.apache.log4j.Level;
-		val level = Level.WARN;
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.SparkToNatsConnectorPool[Object]], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.SparkToNatsConnector[Object]], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.AbstractSparkToStandardNatsConnectorPool[Object]], level);
@@ -77,8 +78,6 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
  
     ssc = new StreamingContext(conf, batchDuration)
     
-//    pool = SparkToNatsConnectorPool.newStreamingPool(CLUSTER_ID).withSubjects(subject1, subject2).withNatsURL(STAN_URL)
-    
 		UnitTestUtilities.startStreamingServer(CLUSTER_ID);
 		
 		DEFAULT_SUBJECT_INR += 1
@@ -91,7 +90,7 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
     }
   }
 	
-  ignore("NatsSubscriber should receive NATS messages DIRECTLY from NatsPublisher") {
+  test("NatsSubscriber should receive NATS messages DIRECTLY from NatsPublisher") {
 		val executor = Executors.newFixedThreadPool(12);
 
 		val nbOfMessages = 5;
@@ -116,7 +115,10 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
                         .withNatsURL(NATS_SERVER_URL)
                         .withSubjects(DEFAULT_SUBJECT)
                         .asStreamOf(ssc)
-		messages.print()
+                        
+		if ((level == Level.TRACE) || (level == Level.DEBUG)) {
+		  messages.print()
+		}
 		
 		val outputSubject = DEFAULT_SUBJECT + "_OUT"
 		SparkToNatsConnectorPool.newPool()
@@ -139,18 +141,23 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
                         .withSubjects(DEFAULT_SUBJECT)
                         .storedAsKeyValue()
                         .asStreamOf(ssc)
-		messages.print()
-		messages.groupByKey().print()
+                        
+		if ((level == Level.TRACE) || (level == Level.DEBUG)) {
+		  messages.print()
+		  messages.groupByKey().print()
+		}
 		
-		val outputSubject = DEFAULT_SUBJECT + "_OUT"
+		val out = "OUT."
+		
 		SparkToNatsConnectorPool.newPool()
                             .withNatsURL(NATS_SERVER_URL)
-                            .withSubjects(outputSubject)
+                            .withSubjects(out)
+                            .storedAsKeyValue()
                             .publishToNats(messages)
-//                            .withSubjectAndPayload()
     ssc.start()
     Thread.sleep(4000)
     
+		val outputSubject =  out + DEFAULT_SUBJECT ;
     checkReceptionOfNatsMessages(outputSubject)
     
     Thread.sleep(1000)
