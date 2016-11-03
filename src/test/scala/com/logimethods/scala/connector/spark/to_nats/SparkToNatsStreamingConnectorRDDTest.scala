@@ -68,9 +68,9 @@ class SparkToNatsStreamingConnectorRDDTest extends FlatSpec with Matchers with E
 		val ns1 = UnitTestUtilities.getNatsStreamingSubscriber(data, subject1, CLUSTER_ID, Utilities.generateUniqueID() + "_SUB1", STAN_URL);;
 		val ns2 = UnitTestUtilities.getNatsStreamingSubscriber(data, subject2, CLUSTER_ID, Utilities.generateUniqueID() + "_SUB2", STAN_URL);
 
-		val lines = mutable.Queue[RDD[String]]()
-    val dstream = ssc.queueStream(lines)
-    val integers = dstream.map({ str => Integer.parseInt(str) })
+		val lines = mutable.Queue[RDD[Integer]]()
+    val integers = ssc.queueStream(lines)
+//    val integers = dstream.map({ str => Integer.parseInt(str) })
  
     integers.print()
     pool.publishToNats(integers)
