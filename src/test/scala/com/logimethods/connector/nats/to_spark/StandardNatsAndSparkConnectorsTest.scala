@@ -62,7 +62,7 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.SparkToNatsConnectorPool[Object]], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.SparkToNatsConnector[Object]], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.AbstractSparkToStandardNatsConnectorPool[Object]], level);
-		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.to_spark.StandardNatsToSparkConnectorImpl], level);
+		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.to_spark.StandardNatsToSparkConnectorImpl[Object]], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.spark.to_nats.SparkToStandardNatsConnectorImpl], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.spark.test.StandardNatsPublisher], level);
 		UnitTestUtilities.setLogLevel(classOf[com.logimethods.connector.nats.spark.test.NatsPublisher], level);
@@ -111,7 +111,7 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
   test("NatsSubscriber should receive NATS messages from NatsPublisher THROUGH SPARK STREAMING") {
 		
 		val messages = NatsToSparkConnector
-                        .receiveFromNats(StorageLevel.MEMORY_ONLY)
+                        .receiveFromNats(classOf[String], StorageLevel.MEMORY_ONLY)
                         .withNatsURL(NATS_SERVER_URL)
                         .withSubjects(DEFAULT_SUBJECT)
                         .asStreamOf(ssc)
@@ -136,7 +136,7 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
   test("NatsSubscriber should receive NATS messages from NatsPublisher through SparkStreaming as Key/Value") {
 		
 		val messages = NatsToSparkConnector
-                        .receiveFromNats(StorageLevel.MEMORY_ONLY)
+                        .receiveFromNats(classOf[String], StorageLevel.MEMORY_ONLY)
                         .withNatsURL(NATS_SERVER_URL)
                         .withSubjects(DEFAULT_SUBJECT)
                         .storedAsKeyValue()
