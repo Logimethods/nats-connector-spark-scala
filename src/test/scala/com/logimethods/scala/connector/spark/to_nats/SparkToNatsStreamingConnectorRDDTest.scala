@@ -15,7 +15,7 @@ import scala.util.Try
 import com.logimethods.connector.nats.spark.test.UnitTestUtilities;
 import com.logimethods.connector.nats.spark.test.UnitTestUtilities._;
 import scala.collection.JavaConversions._
-import com.logimethods.connector.nats_spark.Utilities;
+import com.logimethods.connector.nats_spark.NatsSparkUtilities;
 
 // @see https://www.supergloo.com/fieldnotes/spark-streaming-testing-scala/
 class SparkToNatsStreamingConnectorRDDTest extends FlatSpec with Matchers with Eventually with BeforeAndAfter {
@@ -65,8 +65,8 @@ class SparkToNatsStreamingConnectorRDDTest extends FlatSpec with Matchers with E
   "SparkToNatsConnectorPool " should " send data into NATS" in {
 		val data = UnitTestUtilities.getData();
 
-		val ns1 = UnitTestUtilities.getNatsStreamingSubscriber(data, subject1, CLUSTER_ID, Utilities.generateUniqueID() + "_SUB1", STAN_URL);;
-		val ns2 = UnitTestUtilities.getNatsStreamingSubscriber(data, subject2, CLUSTER_ID, Utilities.generateUniqueID() + "_SUB2", STAN_URL);
+		val ns1 = UnitTestUtilities.getNatsStreamingSubscriber(data, subject1, CLUSTER_ID, NatsSparkUtilities.generateUniqueID() + "_SUB1", STAN_URL);;
+		val ns2 = UnitTestUtilities.getNatsStreamingSubscriber(data, subject2, CLUSTER_ID, NatsSparkUtilities.generateUniqueID() + "_SUB2", STAN_URL);
 
 		val lines = mutable.Queue[RDD[Integer]]()
     val integers = ssc.queueStream(lines)

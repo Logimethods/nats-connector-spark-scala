@@ -27,7 +27,6 @@ import org.apache.spark.storage.StorageLevel;
 import com.logimethods.connector.nats.spark.test.UnitTestUtilities;
 import com.logimethods.connector.nats.spark.test.UnitTestUtilities._;
 import scala.collection.JavaConversions._
-import com.logimethods.connector.nats_spark.Utilities;
 
 import com.logimethods.connector.nats.spark.test.NatsPublisher;
 import com.logimethods.connector.nats.spark.test.StandardNatsPublisher;
