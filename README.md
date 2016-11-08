@@ -60,8 +60,7 @@ The Spark Stream is there made of Key/Value Pairs, where the Key is the _Subject
 val stream = NatsToSparkConnector.receiveFromNats[Streaming](...)
                                  ...
                                  .withSubjects("main-subject.>")
-                                 .storedAsKeyValue()
-                                 .asStreamOf(ssc)
+                                 .asStreamOfKeyValue(ssc)
 stream.groupByKey().print()
 ```
 
@@ -91,8 +90,7 @@ stream.groupByKey().print()
 SparkToNatsConnectorPool.new[Streaming]Pool(...)
                         ...
                         .withSubjects("A1.", "A2.")
-                        .storedAsKeyValue()
-                        .publishToNats(stream)
+                        .publishToNatsAsKeyValue(stream)
 ```
 will send to NATS such [subject:payload] messages:
 ```
