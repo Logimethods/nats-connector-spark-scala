@@ -138,8 +138,7 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
                         .receiveFromNats(classOf[String], StorageLevel.MEMORY_ONLY)
                         .withNatsURL(NATS_SERVER_URL)
                         .withSubjects(DEFAULT_SUBJECT)
-                        .storedAsKeyValue()
-                        .asStreamOf(ssc)
+                        .asStreamOfKeyValue(ssc)
                         
 		if ((level == Level.TRACE) || (level == Level.DEBUG)) {
 		  messages.print()
@@ -151,8 +150,7 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
 		SparkToNatsConnectorPool.newPool()
                             .withNatsURL(NATS_SERVER_URL)
                             .withSubjects(out)
-                            .storedAsKeyValue()
-                            .publishToNats(messages)
+                            .publishToNatsAsKeyValue(messages)
     ssc.start()
     Thread.sleep(4000)
     
