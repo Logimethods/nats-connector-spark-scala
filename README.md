@@ -16,6 +16,7 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 - Spark version 2.0.1 + Scala version 1.11.8
 - `.asStreamOf(ssc)` introduced
 - `storedAsKeyValue()` introduced
+- Message Data can be any Java `Object` (not limited to `String`), serialized as `byte[]` (the native NATS payload format)
 
 ## Installation
 ```Scala
@@ -26,7 +27,7 @@ libraryDependencies += "com.logimethods"  %% "nats-connector-spark-scala" % "0.2
 ```
 
 ## Usage (in Scala)
-_See the [Java code Documentation](https://github.com/Logimethods/nats-connector-spark/blob/master/README.md#usage-in-java) to get the list of the available options (properties, subjects, etc.)._
+_See the [Java code Documentation](https://github.com/Logimethods/nats-connector-spark/blob/master/README.md#usage-in-java) to get the list of the available options (properties, subjects, encoder/decoder, etc.)._
 ```Scala
 import com.logimethods.connector.nats.to_spark._
 import com.logimethods.scala.connector.spark.to_nats._
@@ -36,7 +37,7 @@ val ssc = new StreamingContext(sc, new Duration(2000));
 
 ### From NATS Streaming to Spark
 ```Scala
-val stream = NatsToSparkConnector.receiveFromNatsStreaming(StorageLevel.MEMORY_ONLY, clusterId)
+val stream = NatsToSparkConnector.receiveFromNatsStreaming(classOf[String], StorageLevel.MEMORY_ONLY, clusterId)
                                  .withNatsURL(natsUrl)
                                  .withSubjects(inputSubject)
                                  .asStreamOf(ssc)
@@ -45,7 +46,7 @@ val stream = NatsToSparkConnector.receiveFromNatsStreaming(StorageLevel.MEMORY_O
 ```Scala
 val properties = new Properties()
 val natsUrl = System.getenv("NATS_URI")
-val stream = NatsToSparkConnector.receiveFromNats(StorageLevel.MEMORY_ONLY)
+val stream = NatsToSparkConnector.receiveFromNats(classOf[Integer], StorageLevel.MEMORY_ONLY)
                                  .withProperties(properties)
                                  .withSubjects(inputSubject)
                                  .asStreamOf(ssc)
