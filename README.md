@@ -118,15 +118,22 @@ The Spark elements are first serialized as `byte[]` before being sent to NATS. B
 
 #### Custom Serialization
 
-*TODO: ADAPT TO SCALA*
-
 Custom serialization can be performed by a `java.util.function.Function<[Class],  byte[]> & Serializable)` function provided through the `.publishToNats(...)` method, like:
 
-```java
-SparkToNatsConnectorPool.newPool()
-			.withNatsURL(NATS_SERVER_URL)
-			.publishToNats(stream, 
-				       (java.util.function.Function<String, byte[]> & Serializable) str -> str.getBytes());
+```scala
+val stream: DStream[(String, (Long, Float))] = .../...
+
+def longFloatTupleEncoder: Tuple2[Long,Float] => Array[Byte] = tuple => {        
+      val buffer = ByteBuffer.allocate(8+4);
+      buffer.putLong(tuple._1)
+      buffer.putFloat(tuple._2)        
+      buffer.array()    
+    }
+
+SparkToNatsConnectorPool.newStreamingPool(clusterId)
+                        .withNatsURL(natsUrl)
+                        .withSubjects(outputSubject)
+                        .publishToNatsAsKeyValue(stream, longFloatTupleEncoder)
 ```
 
 #### From Spark to NATS Streaming
