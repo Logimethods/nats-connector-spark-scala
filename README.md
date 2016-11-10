@@ -111,6 +111,24 @@ stream.groupByKey().print()
 ```
 
 ### From Spark to NATS
+
+#### Serialization of the primitive types
+
+The Spark elements are first serialized as `byte[]` before being sent to NATS. By default, the (Java) primitive types are encoded through the `com.logimethods.connector.nats_spark.NatsSparkUtilities.encodeData(Object obj)` method.
+
+#### Custom Serialization
+
+*TODO: ADAPT TO SCALA*
+
+Custom serialization can be performed by a `java.util.function.Function<[Class],  byte[]> & Serializable)` function provided through the `.publishToNats(...)` method, like:
+
+```java
+SparkToNatsConnectorPool.newPool()
+			.withNatsURL(NATS_SERVER_URL)
+			.publishToNats(stream, 
+				       (java.util.function.Function<String, byte[]> & Serializable) str -> str.getBytes());
+```
+
 #### From Spark to NATS Streaming
 ```Scala
 SparkToNatsConnectorPool.newStreamingPool(clusterId)
