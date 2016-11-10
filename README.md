@@ -34,15 +34,61 @@ import com.logimethods.scala.connector.spark.to_nats._
 
 val ssc = new StreamingContext(sc, new Duration(2000));
 ```
+### From NATS to Spark
 
-### From NATS Streaming to Spark
+The reception of NATS Messages as Spark Steam is done through the `NatsToSparkConnector.receiveFromNats(classOf[Class], ...)` method, where `[Class]` is the Java Class of the objects to deserialize.
+
+#### Deserialization of the primitive types
+
+Those objects need first to be serialized as `byte[]` using the right protocol before being stored into the NATS messages payload.
+
+By default, the (Java) primitive types are then automatically decoded by the connector.
+
+#### Custom Deserialization
+
+For more complex types, you should provide your own decoder through the `withDataDecoder(scala.Function1<byte[], V> dataDecoder)` method.
+
+Let's say that the payload have been encoded that way:
+```Scala
+def encodePayload(date: LocalDateTime, value: Float): Array[Byte] = {
+  // https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html
+  val buffer = ByteBuffer.allocate(4+8);
+  buffer.putLong(date.atZone(zoneId).toEpochSecond())
+  buffer.putFloat(value)
+  
+  return buffer.array()    
+}
+```
+
+You should provide your own decoder:
+
+```Scala
+def dataDecoder: Array[Byte] => Tuple2[Long,Float] = bytes => {
+      import java.nio.ByteBuffer
+      val buffer = ByteBuffer.wrap(bytes);
+      val epoch = buffer.getLong()
+      val voltage = buffer.getFloat()
+      (epoch, voltage)  
+    }
+
+import org.apache.spark.streaming.dstream._
+val messages: ReceiverInputDStream[(String, (Long, Float))] =
+  NatsToSparkConnector
+    .receiveFromNatsStreaming(classOf[Tuple2[Long,Float]], StorageLevel.MEMORY_ONLY, clusterId)
+    .withNatsURL(natsUrl)
+    .withSubjects(inputSubject)
+    .withDataDecoder(dataDecoder)
+    .asStreamOfKeyValue(ssc)
+```
+
+#### From NATS Streaming to Spark
 ```Scala
 val stream = NatsToSparkConnector.receiveFromNatsStreaming(classOf[String], StorageLevel.MEMORY_ONLY, clusterId)
                                  .withNatsURL(natsUrl)
                                  .withSubjects(inputSubject)
                                  .asStreamOf(ssc)
 ```
-### From NATS ~~Streaming~~ to Spark
+#### From NATS ~~Streaming~~ to Spark
 ```Scala
 val properties = new Properties()
 val natsUrl = System.getenv("NATS_URI")
@@ -52,7 +98,7 @@ val stream = NatsToSparkConnector.receiveFromNats(classOf[Integer], StorageLevel
                                  .asStreamOf(ssc)
 ```
 
-### From NATS (Streaming or not) to Spark as *Key/Value Pairs*
+#### From NATS (Streaming or not) to Spark as *Key/Value Pairs*
 
 The Spark Stream is there made of Key/Value Pairs, where the Key is the _Subject_ and the Value is the _Payload_ of the NATS Messages.
 
@@ -64,7 +110,8 @@ val stream = NatsToSparkConnector.receiveFromNats[Streaming](...)
 stream.groupByKey().print()
 ```
 
-### From Spark to NATS Streaming
+### From Spark to NATS
+#### From Spark to NATS Streaming
 ```Scala
 SparkToNatsConnectorPool.newStreamingPool(clusterId)
                         .withNatsURL(natsUrl)
@@ -72,7 +119,7 @@ SparkToNatsConnectorPool.newStreamingPool(clusterId)
                         .publishToNats(stream)
 ```
 
-### From Spark to NATS ~~Streaming~~
+#### From Spark to NATS ~~Streaming~~
 ```Scala
 SparkToNatsConnectorPool.newPool()
                         .withProperties(properties)
@@ -80,7 +127,7 @@ SparkToNatsConnectorPool.newPool()
                         .publishToNats(stream)
                         
 ```
-### From Spark as *Key/Value Pairs* to NATS (Streaming or not)
+#### From Spark as *Key/Value Pairs* to NATS (Streaming or not)
 
 The Spark Stream should there be made of Key/Value Pairs. `.storedAsKeyValue()` will publish NATS Messages where the Subject is a composition of the (optional) _Global Subject(s)_ and the _Key_ of the Pairs ; while the NATS _Payload_ will be the Pair's _Value_.
 
@@ -100,7 +147,6 @@ will send to NATS such [subject:payload] messages:
 [A2.key2:string2]
 ...
 ```
-
 ## Code Samples
 * The ['docker-nats-connector-spark'](https://github.com/Logimethods/docker-nats-connector-spark) Docker Based Project that makes use of Gatling, Spark & NATS.
 
