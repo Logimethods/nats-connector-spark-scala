@@ -156,7 +156,7 @@ SparkToNatsConnectorPool.newPool()
 
 The Spark Stream should there be made of Key/Value Pairs. `.storedAsKeyValue()` will publish NATS Messages where the Subject is a composition of the (optional) _Global Subject(s)_ and the _Key_ of the Pairs ; while the NATS _Payload_ will be the Pair's _Value_.
 
-```
+```scala
 stream.groupByKey().print()
 
 SparkToNatsConnectorPool.new[Streaming]Pool(...)
@@ -165,7 +165,7 @@ SparkToNatsConnectorPool.new[Streaming]Pool(...)
                         .publishToNatsAsKeyValue(stream)
 ```
 will send to NATS such [subject:payload] messages:
-```
+```scala
 [A1.key1:string1]
 [A2.key1:string1]
 [A1.key2:string2]
