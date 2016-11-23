@@ -52,7 +52,7 @@ Let's say that the payload have been encoded that way:
 ```Scala
 def encodePayload(date: LocalDateTime, value: Float): Array[Byte] = {
   // https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html
-  val buffer = ByteBuffer.allocate(4+8);
+  val buffer = ByteBuffer.allocate(8+4);
   buffer.putLong(date.atZone(zoneId).toEpochSecond())
   buffer.putFloat(value)
   
