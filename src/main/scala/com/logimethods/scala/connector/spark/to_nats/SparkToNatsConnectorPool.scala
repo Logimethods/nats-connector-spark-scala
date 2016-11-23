@@ -19,11 +19,25 @@ class SparkToNatsStreamingConnectorPoolScala(clusterID: String)
                                             with SparkToNatsConnectorPoolTrait[SparkToNatsStreamingConnectorPoolScala] {  
 }
 
+/**
+ * The Scala version of the (Java based) Spark to Nats Connector Pool.
+ * 
+ * @see <a href="https://github.com/Logimethods/nats-connector-spark-scala">(Scala based) NATS / Spark Connectors</a>
+ * @see <a href="https://github.com/Logimethods/nats-connector-spark">(Java based) NATS / Spark Connectors</a>
+ * 
+ * @author Laurent Magnin
+ */
 object SparkToNatsConnectorPool  {  
+   /**
+   * @return a pool of Spark to NATS Connectors that should be called through the `publishToNats(stream: DStream[_], ...)` methods
+   */
   def newPool(): SparkToStandardNatsConnectorPoolScala = {
 		new SparkToStandardNatsConnectorPoolScala()
 	}
   
+   /**
+   * @return a pool of Spark to NATS Streaming Connectors that should be called through the `publishToNats(stream: DStream[_], ...)` methods
+   */
   def newStreamingPool(clusterID: String): SparkToNatsStreamingConnectorPoolScala = {
 		new SparkToNatsStreamingConnectorPoolScala(clusterID)
 	}

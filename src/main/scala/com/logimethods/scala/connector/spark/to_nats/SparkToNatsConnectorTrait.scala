@@ -9,6 +9,14 @@ package com.logimethods.connector.spark.to_nats
 
 import org.apache.spark.streaming.dstream.DStream
 
+/**
+ * A Trait that provides the `publishToNats(stream: DStream[_])` type of methods implementations
+ * based on the `stream.foreachRDD` Scala style kind of loop.
+ * 
+ * @param <T>, the final class of the SparkToNatsConnectorPool itself.
+ * 
+ * @author Laurent Magnin
+ */
 trait SparkToNatsConnectorPoolTrait[T] extends SparkToNatsConnectorPool[T] {
 
   // http://spark.apache.org/docs/1.6.2/streaming-programming-guide.html#design-patterns-for-using-foreachrdd
