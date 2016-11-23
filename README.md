@@ -174,6 +174,7 @@ will send to NATS such [subject:payload] messages:
 ```
 ## Code Samples
 * The ['docker-nats-connector-spark'](https://github.com/Logimethods/docker-nats-connector-spark) Docker Based Project that makes use of Gatling, Spark & NATS.
+* The ['smart-meter'](https://github.com/Logimethods/smart-meter) Docker *Swarm* Based Project that makes use of Gatling, Spark & NATS.
 
 ## License
 
