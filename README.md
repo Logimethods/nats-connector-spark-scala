@@ -42,7 +42,7 @@ The reception of NATS Messages as Spark Steam is done through the `NatsToSparkCo
 
 Those objects need first to be serialized as `byte[]` using the right protocol before being stored into the NATS messages payload.
 
-By default, the (Java) primitive types are then automatically decoded by the connector.
+By default, the (Java) number types are then automatically decoded by the connector.
 
 #### Custom Deserialization
 
@@ -60,7 +60,7 @@ def encodePayload(date: LocalDateTime, value: Float): Array[Byte] = {
 }
 ```
 
-You should provide your own decoder:
+You have to provide your own decoder:
 
 ```Scala
 def dataDecoder: Array[Byte] => Tuple2[Long,Float] = bytes => {
@@ -114,7 +114,7 @@ stream.groupByKey().print()
 
 #### Serialization of the primitive types
 
-The Spark elements are first serialized as `byte[]` before being sent to NATS. By default, the (Java) primitive types are encoded through the `com.logimethods.connector.nats_spark.NatsSparkUtilities.encodeData(Object obj)` method.
+The Spark elements are first serialized as `byte[]` before being sent to NATS. By default, the (Java) number types are encoded through the `com.logimethods.connector.nats_spark.NatsSparkUtilities.encodeData(Object obj)` method.
 
 #### Custom Serialization
 
