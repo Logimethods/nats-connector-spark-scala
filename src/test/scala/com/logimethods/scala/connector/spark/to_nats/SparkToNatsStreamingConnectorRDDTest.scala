@@ -1,4 +1,4 @@
-package com.logimethods.scala.connector.spark.to_nats
+package com.logimethods.connector.spark.to_nats
 
 import org.apache.hadoop.mapred.InvalidInputException
 import org.apache.spark.SparkConf
@@ -16,6 +16,7 @@ import com.logimethods.connector.nats.spark.test.UnitTestUtilities;
 import com.logimethods.connector.nats.spark.test.UnitTestUtilities._;
 import scala.collection.JavaConversions._
 import com.logimethods.connector.nats_spark.NatsSparkUtilities;
+import com.logimethods.scala.connector.spark.to_nats._
 
 // @see https://www.supergloo.com/fieldnotes/spark-streaming-testing-scala/
 class SparkToNatsStreamingConnectorRDDTest extends FlatSpec with Matchers with Eventually with BeforeAndAfter {
@@ -51,7 +52,7 @@ class SparkToNatsStreamingConnectorRDDTest extends FlatSpec with Matchers with E
     ssc = new StreamingContext(conf, batchDuration)
     clock = new ClockWrapper(ssc)
     
-    pool = SparkToNatsConnectorPool.newStreamingPool(CLUSTER_ID).withSubjects(subject1, subject2).withNatsURL(STAN_URL)
+    pool = com.logimethods.scala.connector.spark.to_nats.SparkToNatsConnectorPool.newStreamingPool(CLUSTER_ID).withSubjects(subject1, subject2).withNatsURL(STAN_URL)
     
 		UnitTestUtilities.startStreamingServer(CLUSTER_ID);
   }
