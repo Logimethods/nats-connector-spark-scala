@@ -8,12 +8,12 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 [![MIT License](https://img.shields.io/npm/l/express.svg)](http://opensource.org/licenses/MIT)
 [![Issues](https://img.shields.io/github/issues/Logimethods/nats-connector-spark-scala.svg)](https://github.com/Logimethods/nats-connector-spark-scala/issues)
 [![wercker status](https://app.wercker.com/status/4dc494e7708dc596dfc37b65500cf70c/s/master "wercker status")](https://app.wercker.com/project/byKey/4dc494e7708dc596dfc37b65500cf70c)
-[![Scaladoc](http://javadoc-badge.appspot.com/com.logimethods/nats-connector-spark-scala_2.10.svg?label=scaladoc)](http://logimethods.github.io/nats-connector-spark-scala/)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.10/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.10)
+[![Scaladoc](http://javadoc-badge.appspot.com/com.logimethods/nats-connector-spark-scala_2.11.svg?label=scaladoc)](http://logimethods.github.io/nats-connector-spark-scala/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.10/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.11)
 
 ## Release Notes
 ### Version 0.3.0
-- Spark version 2.0.1 + Scala version 1.11.8
+- Spark version 2.0.1 + Scala version 2.11.8
 - `.asStreamOf(ssc)` introduced
 - `storedAsKeyValue()` introduced
 - Message Data can be any Java `Object` (not limited to `String`), serialized as `byte[]` (the native NATS payload format)
