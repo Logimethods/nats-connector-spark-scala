@@ -12,6 +12,8 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.10/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.11)
 
 ## Release Notes
+### Version 0.4.0-SNAPSHOT
+
 ### Version 0.3.0
 - Spark version 2.0.1 + Scala version 2.11.8
 - `.asStreamOf(ssc)` introduced
