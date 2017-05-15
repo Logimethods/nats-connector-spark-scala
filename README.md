@@ -13,6 +13,7 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 
 ## Release Notes
 ### Version 0.4.0-SNAPSHOT
+- Spark version 2.1.0
 
 ### Version 0.3.0
 - Spark version 2.0.1 + Scala version 2.11.8
