@@ -7,7 +7,7 @@ organization := "com.logimethods"
 
 version := "0.4.0-SNAPSHOT"
 scalaVersion := "2.11.8"
-val sparkVersion = "2.0.1"
+val sparkVersion = "2.1.0"
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 resolvers += "Sonatype OSS Release" at "https://oss.sonatype.org/content/groups/public/"
