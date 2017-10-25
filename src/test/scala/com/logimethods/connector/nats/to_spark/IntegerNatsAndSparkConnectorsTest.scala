@@ -46,15 +46,21 @@ class IntegerNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsTe
                         .withSubjects(DEFAULT_SUBJECT)
                         .asStreamOf(ssc)
                         
-		if ((level == Level.TRACE) || (level == Level.DEBUG)) {
+		if (level == Level.TRACE) {
 		  messages.print()
+		}
+		
+		val incrMessages = messages.map(_ + 1)
+		
+		if ((level == Level.TRACE) || (level == Level.DEBUG)) {
+		  incrMessages.print()
 		}
 		
 		val outputSubject = DEFAULT_SUBJECT + "_OUT"
 		SparkToNatsConnectorPool.newPool()
                             .withNatsURL(NATS_SERVER_URL)
                             .withSubjects(outputSubject)
-                            .publishToNats(messages)
+                            .publishToNats(incrMessages)
     ssc.start()
     Thread.sleep(4000)
     
@@ -71,9 +77,16 @@ class IntegerNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsTe
                         .withSubjects(DEFAULT_SUBJECT)
                         .asStreamOfKeyValue(ssc)
                         
-		if ((level == Level.TRACE) || (level == Level.DEBUG)) {
+		if (level == Level.TRACE) {
 		  messages.print()
 		  messages.groupByKey().print()
+		}
+		
+		val incrMessages = messages.map({ case (k, v) => (k, v + 1) })
+                        
+		if ((level == Level.TRACE) || (level == Level.DEBUG)) {
+		  incrMessages.print()
+		  incrMessages.groupByKey().print()
 		}
 		
 		val out = "OUT."
@@ -81,7 +94,7 @@ class IntegerNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsTe
 		SparkToNatsConnectorPool.newPool()
                             .withNatsURL(NATS_SERVER_URL)
                             .withSubjects(out)
-                            .publishToNatsAsKeyValue(messages)
+                            .publishToNatsAsKeyValue(incrMessages)
     ssc.start()
     Thread.sleep(4000)
     
