@@ -15,12 +15,12 @@ import com.logimethods.connector.nats.spark.test.UnitTestUtilities._;
 import com.logimethods.connector.nats.spark.test.NatsPublisher;
 import com.logimethods.connector.nats.spark.test.NatsSubscriber;
 
-import com.logimethods.connector.nats.spark.test.StandardNatsPublisher;
-import com.logimethods.connector.nats.spark.test.StandardNatsSubscriber;
+import com.logimethods.connector.nats.spark.test.IntegerNatsPublisher;
+import com.logimethods.connector.nats.spark.test.IntegerNatsSubscriber;
 
-class StandardNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsTest { 
-  	
-  test("NatsSubscriber should receive NATS messages DIRECTLY from NatsPublisher") {
+class IntegerNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsTest { 
+  
+  test("NatsSubscriber should receive [Integer] NATS messages DIRECTLY from NatsPublisher") {
 		val executor = Executors.newFixedThreadPool(12);
 
 		val nbOfMessages = 5;
@@ -38,10 +38,10 @@ class StandardNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsT
 		ns.waitForCompletion()
   }
 	
-  test("NatsSubscriber should receive NATS messages from NatsPublisher THROUGH SPARK STREAMING") {
+  test("NatsSubscriber should receive [Integer] NATS messages from NatsPublisher THROUGH SPARK STREAMING") {
 		
 		val messages = NatsToSparkConnector
-                        .receiveFromNats(classOf[String], StorageLevel.MEMORY_ONLY)
+                        .receiveFromNats(classOf[Integer], StorageLevel.MEMORY_ONLY)
                         .withNatsURL(NATS_SERVER_URL)
                         .withSubjects(DEFAULT_SUBJECT)
                         .asStreamOf(ssc)
@@ -63,10 +63,10 @@ class StandardNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsT
     Thread.sleep(1000)
   }
 	
-  test("NatsSubscriber should receive NATS messages from NatsPublisher through SparkStreaming as Key/Value") {
+  test("NatsSubscriber should receive [Integer] NATS messages from NatsPublisher through SparkStreaming as Key/Value") {
 		
 		val messages = NatsToSparkConnector
-                        .receiveFromNats(classOf[String], StorageLevel.MEMORY_ONLY)
+                        .receiveFromNats(classOf[Integer], StorageLevel.MEMORY_ONLY)
                         .withNatsURL(NATS_SERVER_URL)
                         .withSubjects(DEFAULT_SUBJECT)
                         .asStreamOfKeyValue(ssc)
@@ -90,12 +90,12 @@ class StandardNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsT
     
     Thread.sleep(1000)
   }
-
+  
   def getNatsPublisher(nbOfMessages: Integer): NatsPublisher = {
-		return new StandardNatsPublisher("np", NATS_SERVER_URL, DEFAULT_SUBJECT, nbOfMessages);
+		return new IntegerNatsPublisher("np", NATS_SERVER_URL, DEFAULT_SUBJECT, nbOfMessages);
 	}
   
   def getNatsSubscriber(outputSubject: String, nbOfMessages: Integer): NatsSubscriber = {
-		return new StandardNatsSubscriber(NATS_SERVER_URL, outputSubject + "_id", outputSubject, nbOfMessages);
+		return new IntegerNatsSubscriber(NATS_SERVER_URL, outputSubject + "_id", outputSubject, nbOfMessages);
 	}
 }
