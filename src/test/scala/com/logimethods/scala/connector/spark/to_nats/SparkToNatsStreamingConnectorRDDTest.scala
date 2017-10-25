@@ -48,6 +48,7 @@ class SparkToNatsStreamingConnectorRDDTest extends FlatSpec with Matchers with E
 		val conf = new SparkConf()
       .setMaster(master).setAppName(appName)
       .set("spark.streaming.clock", "org.apache.spark.streaming.util.ManualClock")
+      .set("spark.driver.host", "localhost") // https://issues.apache.org/jira/browse/SPARK-19394
  
     ssc = new StreamingContext(conf, batchDuration)
     clock = new ClockWrapper(ssc)

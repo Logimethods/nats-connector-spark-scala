@@ -72,7 +72,9 @@ class StandardNatsAndSparkConnectorsTest extends FunSuite with BeforeAndAfter wi
 		UnitTestUtilities.setLogLevel("org.apache.spark", Level.WARN);
 		UnitTestUtilities.setLogLevel("org.spark-project", Level.WARN);
 
-		val conf = new SparkConf().setMaster(master).setAppName(appName)
+		val conf = new SparkConf().setMaster(master)
+                      				.setAppName(appName)
+                      				.set("spark.driver.host", "localhost") // https://issues.apache.org/jira/browse/SPARK-19394
  
     ssc = new StreamingContext(conf, batchDuration)
     
