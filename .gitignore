@@ -22,3 +22,5 @@ project/plugins/project/
 .cache-tests
 
 .DS_Store
+/bin/
+.settings/

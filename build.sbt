@@ -6,8 +6,8 @@ organization := "com.logimethods"
 //// sonatypeProfileName := "laurent.magnin"
 
 version := "0.4.0-SNAPSHOT"
-scalaVersion := "2.11.8"
-val sparkVersion = "2.1.0"
+scalaVersion := "2.11.12"
+val sparkVersion = "2.2.1"
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 resolvers += "Sonatype OSS Release" at "https://oss.sonatype.org/content/groups/public/"
@@ -17,8 +17,8 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion % "prov
 libraryDependencies += "org.apache.spark" %% "spark-streaming" % sparkVersion
 
 // http://www.scalatest.org/install
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.0"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.0" % "test"
+libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.4"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
 
 parallelExecution in Test := false
 
