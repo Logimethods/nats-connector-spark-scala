@@ -12,12 +12,17 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.11)
 
 ## Release Notes
+### Version 1.0.0-SNAPSHOT
+- Based on [nats-connector-spark](https://github.com/Logimethods/nats-connector-spark) version `1.0.0-SNAPSHOT`
+- Based on [Java Nats Streaming](https://github.com/nats-io/java-nats-streaming) `2.1.2`, which includes [NATS - Java Client](https://github.com/nats-io/java-nats) version `2.3.0`
+- Based on Spark version `2.3.2`
+
 ### Version 0.4.0
-- nats-connector-spark version 0.4.0
-- Spark version 2.2.1
+- nats-connector-spark version `0.4.0`
+- Spark version `2.2.1`
 
 ### Version 0.3.0
-- Spark version 2.0.1 + Scala version 2.11.8
+- Spark version `2.0.1` + Scala version `2.11.8`
 - `.asStreamOf(ssc)` introduced
 - `storedAsKeyValue()` introduced
 - Message Data can be any Java `Object` (not limited to `String`), serialized as `byte[]` (the native NATS payload format)
@@ -59,7 +64,7 @@ def encodePayload(date: LocalDateTime, value: Float): Array[Byte] = {
   val buffer = ByteBuffer.allocate(8+4);
   buffer.putLong(date.atZone(zoneId).toEpochSecond())
   buffer.putFloat(value)
-  
+
   return buffer.array()    
 }
 ```
@@ -154,7 +159,7 @@ SparkToNatsConnectorPool.newPool()
                         .withProperties(properties)
                         .withSubjects(outputSubject)
                         .publishToNats(stream)
-                        
+
 ```
 #### From Spark as *Key/Value Pairs* to NATS (Streaming or not)
 
