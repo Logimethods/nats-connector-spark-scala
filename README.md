@@ -18,7 +18,7 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 - Based on Spark version `2.3.2`
 
 ### Version 0.4.0
-- nats-connector-spark version `0.4.0`
+- Based on [nats-connector-spark](https://github.com/Logimethods/nats-connector-spark)  version `0.4.0`
 - Spark version `2.2.1`
 
 ### Version 0.3.0
