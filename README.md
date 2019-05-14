@@ -15,7 +15,7 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 ### Version 1.0.0-SNAPSHOT
 - Based on [nats-connector-spark](https://github.com/Logimethods/nats-connector-spark) version `1.0.0-SNAPSHOT`
 - Based on [Java Nats Streaming](https://github.com/nats-io/java-nats-streaming) `2.1.2`, which includes [NATS - Java Client](https://github.com/nats-io/java-nats) version `2.3.0`
-- Based on Spark version `2.3.2`
+- Based on Spark version `2.3.1`
 
 ### Version 0.4.0
 - Based on [nats-connector-spark](https://github.com/Logimethods/nats-connector-spark)  version `0.4.0`
