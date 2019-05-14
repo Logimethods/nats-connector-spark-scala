@@ -42,7 +42,7 @@ class IntegerNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsTe
 		
 		val messages = NatsToSparkConnector
                         .receiveFromNats(classOf[Integer], StorageLevel.MEMORY_ONLY)
-                        .withNatsURL(NATS_SERVER_URL)
+                        .withNatsURL(NATS_LOCALHOST_URL)
                         .withSubjects(DEFAULT_SUBJECT)
                         .asStreamOf(ssc)
                         
@@ -58,7 +58,7 @@ class IntegerNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsTe
 		
 		val outputSubject = DEFAULT_SUBJECT + "_OUT"
 		SparkToNatsConnectorPool.newPool()
-                            .withNatsURL(NATS_SERVER_URL)
+                            .withNatsURL(NATS_LOCALHOST_URL)
                             .withSubjects(outputSubject)
                             .publishToNats(incrMessages)
     ssc.start()
@@ -73,7 +73,7 @@ class IntegerNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsTe
 		
 		val messages = NatsToSparkConnector
                         .receiveFromNats(classOf[Integer], StorageLevel.MEMORY_ONLY)
-                        .withNatsURL(NATS_SERVER_URL)
+                        .withNatsURL(NATS_LOCALHOST_URL)
                         .withSubjects(DEFAULT_SUBJECT)
                         .asStreamOfKeyValue(ssc)
                         
@@ -92,7 +92,7 @@ class IntegerNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsTe
 		val out = "OUT."
 		
 		SparkToNatsConnectorPool.newPool()
-                            .withNatsURL(NATS_SERVER_URL)
+                            .withNatsURL(NATS_LOCALHOST_URL)
                             .withSubjects(out)
                             .publishToNatsAsKeyValue(incrMessages)
     ssc.start()
@@ -105,10 +105,10 @@ class IntegerNatsAndSparkConnectorsTest extends AbstractNatsAndSparkConnectorsTe
   }
   
   def getNatsPublisher(nbOfMessages: Integer): NatsPublisher = {
-		return new IntegerNatsPublisher("np", NATS_SERVER_URL, DEFAULT_SUBJECT, nbOfMessages);
+		return new IntegerNatsPublisher("np", NATS_LOCALHOST_URL, DEFAULT_SUBJECT, nbOfMessages);
 	}
   
   def getNatsSubscriber(outputSubject: String, nbOfMessages: Integer): NatsSubscriber = {
-		return new IntegerNatsSubscriber(NATS_SERVER_URL, outputSubject + "_id", outputSubject, nbOfMessages);
+		return new IntegerNatsSubscriber(NATS_LOCALHOST_URL, outputSubject + "_id", outputSubject, nbOfMessages);
 	}
 }

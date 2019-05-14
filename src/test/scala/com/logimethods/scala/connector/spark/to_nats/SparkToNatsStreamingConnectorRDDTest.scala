@@ -53,7 +53,7 @@ class SparkToNatsStreamingConnectorRDDTest extends FlatSpec with Matchers with E
     ssc = new StreamingContext(conf, batchDuration)
     clock = new ClockWrapper(ssc)
     
-    pool = com.logimethods.scala.connector.spark.to_nats.SparkToNatsConnectorPool.newStreamingPool(CLUSTER_ID).withSubjects(subject1, subject2).withNatsURL(STAN_URL)
+    pool = com.logimethods.scala.connector.spark.to_nats.SparkToNatsConnectorPool.newStreamingPool(CLUSTER_ID).withSubjects(subject1, subject2).withNatsURL(NATS_STREAMING_LOCALHOST_URL)
     
 		UnitTestUtilities.startStreamingServer(CLUSTER_ID);
   }
@@ -67,8 +67,8 @@ class SparkToNatsStreamingConnectorRDDTest extends FlatSpec with Matchers with E
   "SparkToNatsConnectorPool " should " send data into NATS" in {
 		val data = UnitTestUtilities.getData();
 
-		val ns1 = UnitTestUtilities.getNatsStreamingSubscriber(data, subject1, CLUSTER_ID, NatsSparkUtilities.generateUniqueID() + "_SUB1", STAN_URL);;
-		val ns2 = UnitTestUtilities.getNatsStreamingSubscriber(data, subject2, CLUSTER_ID, NatsSparkUtilities.generateUniqueID() + "_SUB2", STAN_URL);
+		val ns1 = UnitTestUtilities.getNatsStreamingSubscriber(data, subject1, CLUSTER_ID, NatsSparkUtilities.generateUniqueID() + "_SUB1", NATS_STREAMING_LOCALHOST_URL);
+		val ns2 = UnitTestUtilities.getNatsStreamingSubscriber(data, subject2, CLUSTER_ID, NatsSparkUtilities.generateUniqueID() + "_SUB2", NATS_STREAMING_LOCALHOST_URL);
 
 		val lines = mutable.Queue[RDD[Integer]]()
     val integers = ssc.queueStream(lines)
