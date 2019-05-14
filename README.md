@@ -12,7 +12,7 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.logimethods/nats-connector-spark-scala_2.11)
 
 ## Release Notes
-### Version 1.0.0-SNAPSHOT
+### Version 1.0.0
 - Based on [nats-connector-spark](https://github.com/Logimethods/nats-connector-spark) version `1.0.0-SNAPSHOT`
 - Based on [Java Nats Streaming](https://github.com/nats-io/java-nats-streaming) `2.1.2`, which includes [NATS - Java Client](https://github.com/nats-io/java-nats) version `2.3.0`
 - Based on Spark version `2.3.1`
