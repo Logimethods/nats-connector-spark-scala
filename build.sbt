@@ -5,9 +5,9 @@ organization := "com.logimethods"
 // Your profile name of the sonatype account. The default is the same with the organization value
 //// sonatypeProfileName := "laurent.magnin"
 
-version := "0.4.0"
+version := "1.0.0"
 scalaVersion := "2.11.12"
-val sparkVersion = "2.2.1"
+val sparkVersion = "2.3.1"
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 resolvers += "Sonatype OSS Release" at "https://oss.sonatype.org/content/groups/public/"
