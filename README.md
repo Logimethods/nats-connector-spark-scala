@@ -16,6 +16,7 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 - Based on [nats-connector-spark](https://github.com/Logimethods/nats-connector-spark) version `1.0.0`
 - Based on [Java Nats Streaming](https://github.com/nats-io/java-nats-streaming) `2.1.2`, which includes [NATS - Java Client](https://github.com/nats-io/java-nats) version `2.3.0`
 - Based on Spark version `2.3.1`
+- Published as a [Spark Package](https://spark-packages.org/package/Logimethods/nats-connector-spark-scala)
 
 ### Version 0.4.0
 - Based on [nats-connector-spark](https://github.com/Logimethods/nats-connector-spark)  version `0.4.0`
@@ -28,11 +29,33 @@ That library provided a wrapper over the [(Java based) NATS / Spark Connectors](
 - Message Data can be any Java `Object` (not limited to `String`), serialized as `byte[]` (the native NATS payload format)
 
 ## Installation
+
+### Spark Package
+Include this package in your Spark Applications (`spark-shell`, `pyspark`, or `spark-submit`) using:
+
+```Shell
+> $SPARK_HOME/bin/spark-shell --packages com.logimethods:nats-connector-spark-scala_2.11:1.0.0
+```
+
+### SBT
 ```Scala
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 resolvers += "Sonatype OSS Release" at "https://oss.sonatype.org/content/groups/public/"
 
-libraryDependencies += "com.logimethods"  %% "nats-connector-spark-scala" % "1.0.0"
+libraryDependencies += "com.logimethods" % "nats-connector-spark-scala_2.11" % "1.0.0"
+```
+
+### Maven
+In your `pom.xml`, add:
+```xml
+<dependencies>
+  <!-- list of dependencies -->
+  <dependency>
+    <groupId>com.logimethods</groupId>
+    <artifactId>nats-connector-spark-scala_2.11</artifactId>
+    <version>1.0.0</version>
+  </dependency>
+</dependencies>
 ```
 
 ## Usage (in Scala)
